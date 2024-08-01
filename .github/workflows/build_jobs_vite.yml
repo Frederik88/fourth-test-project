@@ -1,0 +1,36 @@
+name: Test Project
+on: push
+jobs:
+  dependency:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install Dependencies
+        run: npm ci
+  lint:
+    needs: dependency
+    runs-on: ubuntu-latest
+    steps:
+      - name: Linting
+        run: npm run lint
+  unit:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unit Tests
+        run: npm run test
+  build:
+    needs: [lint, unit]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: npm run build
+      - name: Deploy
+        run: echo "Running deployment..."
+
+
